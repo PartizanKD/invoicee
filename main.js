@@ -1,7 +1,12 @@
-const domNumber = document.getElementById("number");
+const domNumber = document.getElementById('invoiceNumber');
 
-const LOCAL_NUMBER = "number";
+domNumber.value = JSON.parse(localStorage.getItem('test'));
 
-domNumber.value = localStorage.getItem("test", LOCAL_NUMBER);
+//const LOCAL_NUMBER = domNumber.value;
 
-console.log(localStorage.getItem("test"));
+domNumber.addEventListener('keyup', invoiceNumber);
+function invoiceNumber() {
+    let LOCAL_NUMBER = domNumber.value;
+    localStorage.setItem('test', JSON.stringify(LOCAL_NUMBER));
+    console.log(JSON.parse(localStorage.getItem('test')));
+}
