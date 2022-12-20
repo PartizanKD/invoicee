@@ -7,9 +7,20 @@
   </head>
   <body>
     <a href="http://127.0.0.1:5173/"></a>
-    <span>№</span><input id="invoiceNumber"/><br>
-    <span>Discount</span><input id="invoiceDiscount"/><br>
-    <span>Taxes</span><input id="invoiceTaxes"/>
+    <div id="modal" style="border: 1px solid black; padding: 5px; width: 30%; margin: 5px; display: none; background-color: white;">
+      <span>Work item </span><input id="workItem"/><br>
+      <span>Description </span><textarea id="description"></textarea><br>
+      <span>Qty </span><input id="qty"/><br>
+      <span>Cost </span><input id="cost"/><br>
+      <button id="closeCreate">Create</button><br>
+      <button id="close">Close</button>
+    </div>
+    <button id="openCreate">+</button>
+    <br>
+    <span>№ </span><input id="invoiceNumber"/><br>
+    <span>Discount </span><input id="invoiceDiscount"/><br>
+    <span>Taxes </span><input id="invoiceTaxes"/>
+    <ol id="listOfInvoice"></ol>
     <div id="app"></div>
     <script type="module" src="main.js"></script>
   </body>
