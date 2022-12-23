@@ -2,26 +2,240 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <link rel="stylesheet" type="text/css" href="style.css" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite App</title>
+    <title>Invoice</title>
   </head>
-  <body>
-    <a href="http://127.0.0.1:5173/"></a>
-    <div id="modal" style="border: 1px solid black; padding: 5px; width: 30%; margin: 5px; display: none; background-color: white;">
-      <span>Work item </span><input id="workItem"/><br>
-      <span>Description </span><textarea id="description"></textarea><br>
-      <span>Qty </span><input id="qty"/><br>
-      <span>Cost </span><input id="cost"/><br>
-      <button id="closeCreate">Create</button><br>
-      <button id="close">Close</button>
-    </div>
-    <button id="openCreate">+</button>
-    <br>
-    <span>№ </span><input id="invoiceNumber"/><br>
-    <span>Discount </span><input id="invoiceDiscount"/><br>
-    <span>Taxes </span><input id="invoiceTaxes"/>
-    <ol id="listOfInvoice"></ol>
-    <div id="app"></div>
-    <script type="module" src="main.js"></script>
+  <body class="bg-gray-200">
+  <div class="font-sans">
+    <div class=" container relative mx-auto bg-neutral-100 box-content">
+      <section class="absolute top-0 h-full w-full hidden bg-white"
+               style="display: none"
+               id="popupWindow">
+        <div class="absolute top-0 h-full w-full bg-gray-500/60" id="workItemPopup"></div>
+        <div class="relative h-104 bg-white px-12 py-6 flex flex-col" id="popupContainer">
+          <header class="flex flex-row justify-between">
+            <button class="text-gray-400 enabled:hover:font-medium disabled:text-gray-700"
+            id="btnPopupDelete">Delete</button>
+            <button class="text-gray-600 hover:text-gray-900"
+            id="btnPopupClose">Close</button>
+          </header>
+
+          <main class="flex flex-row justify-between mt-4">
+            <h1 class="text-4xl text-black font-medium " id="add">Add</h1>
+            <div class="font-medium self-end">
+              <label for="inpPopupQty">Qty:</label>
+              <input required type="text" value class="w-8 border-b-2 focus:border-slate-500
+             focus:outline-none focus:text-slate-600" id="inpPopupQty">
+            </div>
+            <div class="font-medium self-end">
+              <label for="inpPopupCost">Cost: $</label>
+              <input required type="text" value class="w-8 border-b-2 focus:border-slate-500
+             focus:outline-none focus:text-slate-600" id="inpPopupCost">
+            </div>
+            <div class="font-medium self-end">Total:
+              <span class="text-base" id="popupTotal"></span>
+            </div>
+            <button class="bg-gray-400 px-4 rounded-2xl
+            enabled: hover: bg-slate-800
+            disabled: opacity-30
+            disabled:text-gray" id="btnPopupCreate">Create</button>
+
+          </main>
+
+          <footer class="flex flex-row mt-6 w-full">
+            <div class="flex-col w-full">
+              <div class="flex-row">
+                <div class="flex-col">
+                  <div class="font-medium text-xs text-gray-600">
+                    <label for="inpPopupWorkItem">Work item:</label>
+                  </div>
+                  <div class="w-full mt-1">
+                    <input class="bg-gray-100 border-1 w-full h-full p-2"
+                           id="inpPopupWorkItem"
+                           placeholder="Enter title of the work item">
+                  </div>
+                </div>
+              </div>
+              <div class="flex-row mt-6">
+                <div class="flex-col">
+                  <div class="font-medium text-xs text-gray-600">
+                    <label for="inpPopupDescription">Description:</label>
+                  </div>
+                  <div class="w-full mt-1 h-32">
+                    <textarea class="bg-gray-100 border-1 w-full h-full p-2"
+                              id="inpPopupDescription"
+                              placeholder="Write what this work item about"
+                              style="resize: none;"></textarea>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </footer>
+
+        </div>
+
+      </section>
+    <article class="flex flex-col p-12">
+
+      <header class="flex flex-row">
+        <div class="basis-1/2 ">
+          <h1 class="text-4xl text-slate-400">
+            <label for="invoiceNumber">№</label>
+            <input required type="text" id="invoiceNumber" class="w-28 border-b-2 focus:border-slate-500
+             focus:outline-none focus:text-slate-600 px-4">
+          </h1>
+        </div>
+        <div class="basis-1/2">
+          <div class="flex-col">
+            <div class="flex-row">
+          <h1 class="text-4xl text-black font-medium ">Invoice</h1>
+            </div>
+            <div class="flex flex-row mt-10">
+              <div class="basis-1/2">
+                <div class="flex-col">
+                  <h4 class="font-medium text-base">Issued</h4>
+                  <p class="text-sm">01 Sep, 2022</p>
+                </div>
+              </div>
+                <div class="basis-1/2">
+                  <div class="flex-col">
+                    <h4 class="font-medium text-base">Due</h4>
+                    <p class="text-sm">15 Sep, 2022</p>
+                  </div>
+                </div>
+              </div>
+            <div class="flex flex-row mt-10">
+              <div class="basis-1/2">
+                <div class="flex-col">
+                  <h4 class="font-medium text-base">From</h4>
+                  <p class="text-sm">
+                    Name or Company<br>
+                    123 Godly Street<br>
+                    Internet, 198233<br>
+                    Saint-Petersburg, Russia
+                  </p>
+                </div>
+              </div>
+              <div class="basis-1/2">
+                <div class="flex-col">
+                  <h4 class="font-medium">To</h4>
+                  <p class="text-sm">
+                    Payer Company<br>
+                    Unknown Street,
+                    832/6<br>
+                    Extranet TF, 99321<br>
+                    Another City, Country
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <main class="flex flex-row mt-14">
+        <div class="flex flex-col w-full">
+          <div class="flex-row">
+            <section class=" border-b-2 border-gray-700 text-xs text-gray-500 font-bold pb-1">
+              <div class="grid grid-cols-8">
+                <div class="col-span-4">Item</div>
+                <div>Qty</div>
+                <div>Cost
+                  <span class="text-gray-400">($)</span></div>
+                <div class="col-span-2 text-right">Total
+                <span class="text-gray-400">($)</span>
+                </div>
+              </div>
+            </section>
+            <div class="flex-col" id="listWorkItems">
+
+            </div>
+            <div class=" flex-row mt-10">
+              <button class="w-6 h-6 rounded-full text-base font-medium bg-neutral-300 hover:bg-neutral-400"
+              id="btnCreate">
+                +
+              </button>
+            </div>
+            <div class="flex flex-row justify-end mt-14">
+              <div class="w-1/2">
+                <section class=" border-t-2 border-gray-700 leading-8 pt-2">
+                  <div class="flex flex-col">
+                    <div class=" flex flex-row justify-between">Subtotal
+                      <span id="subtotal">0</span>
+                    </div>
+                    <div class="flex flex-row justify-between">
+                      <span>
+                        <label for="invoiceDiscount">Discount (</label>
+                        <input required type="text" value="0"
+                               class="w-4  border-b-2 focus:border-slate-500
+             focus:outline-none focus:text-slate-600" id="invoiceDiscount">
+                        %)
+                        </input>
+                        <sup class="text-gray-500">floor</sup>
+                      </span>
+                      <span id="discount">0</span>
+                    </div>
+                    <div class="flex flex-row justify-between">
+                      <span>
+                        <label for="invoiceTaxes">Taxes (</label>
+                        <input required type="text" value="0"
+                               class="w-4  border-b-2 focus:border-slate-500
+             focus:outline-none focus:text-slate-600" id="invoiceTaxes">
+                        %)
+                        </input>
+                        <sup class="text-gray-500">ceil</sup>
+                      </span>
+                      <span id="taxes">0</span>
+                    </div>
+                  </div>
+                </section>
+                <section class="border-t-2 border-gray-700 mt-14 leading-8 pt-2">
+                  <div class="flex flex-row justify-between">
+                    <span>Total</span>
+                    <span>
+                      <span id="total">0</span>
+                      <span class="text-gray-500">$</span>
+                    </span>
+                  </div>
+                </section>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <footer class="flex flex-row justify-end mt-32">
+        <section class=" flex-col w-1/2">
+          <header class="flex flex-row justify-between">
+            <span class="font-medium">IBAN</span>
+            <input required type="text"
+                    class="w-72 border-b-2 focus:border-slate-500
+                   focus:outline-none focus:text-slate-600"
+                   id="invoiceIBAN"
+                   placeholder="Up to 34 alphanumeric characters"></input>
+          </header>
+
+          <main class=" mt-4 text-sm text-gray-500">
+            <span>Ut enim ad minim veniam,
+              quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+              Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
+              fugiat nulla pariatur.
+              Excepteur sint occaecat cupidatat non proident,
+              sunt in culpa qui officia deserunt mollit anim id est laborum.</span>
+          </main>
+          <footer class="mt-4 text-sm">
+            <div>Thank you,</div>
+            <div>Your name</div>
+          </footer>
+
+        </section>
+      </footer>
+
+    </article>
+  </div>
+  </div>
+    <script type="module" src="/main.js"></script>
   </body>
 </html>

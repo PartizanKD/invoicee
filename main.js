@@ -1,26 +1,24 @@
-/*const domInvoiceNumber = document.getElementById('invoiceNumber');
+const domInvoiceNumber = document.getElementById('invoiceNumber');
+const domOpenCreate = document.getElementById('btnCreate');
+const domSubtotal = document.getElementById('subtotal');//дописала. строка с подсчетом
 const domInvoiceDiscount = document.getElementById('invoiceDiscount');
 const domInvoiceTaxes = document.getElementById('invoiceTaxes');
-const domWorkItem = document.getElementById('inpPopupWorkItem');
-const domDescription = document.getElementById('inpPopupDescription');
+const domTotal = document.getElementById('total');//дописала. строка с подсчетом
+const domIBAN = document.getElementById('invoiceIBAN');//дописала. строка с XXXX XXXX XXXX
+
+const domModalWindow = document.getElementById('popupWindow');
+const domBtnDelete = document.getElementById('btnPopupDelete');//delete в попап
+const domCloseCreate = document.getElementById('btnPopupClose');//close в попапе
+const domBtnCreate = document.getElementById('btnPopupCreate');//создание элемента в попап
 const domQty = document.getElementById('inpPopupQty');
 const domCost = document.getElementById('inpPopupCost');
-const domModalWindow = document.getElementById('popupWindow');
-const domOpenCreate = document.getElementById('btnCreate');
-const domCloseCreate = document.getElementById('btnPopupClose');
-const domListOfInvoice = document.getElementById('listOfInvoice');*/
+const domPopupTotal= document.getElementById('popupTotal');//там где умножаются Qty*Cost
+const domWorkItem = document.getElementById('inpPopupWorkItem');
+const domDescription = document.getElementById('inpPopupDescription');
 
-const domInvoiceNumber = document.getElementById('invoiceNumber');
-const domInvoiceDiscount = document.getElementById('invoiceDiscount');
-const domInvoiceTaxes = document.getElementById('invoiceTaxes');
-const domWorkItem = document.getElementById('workItem');
-const domDescription = document.getElementById('description');
-const domQty = document.getElementById('qty');
-const domCost = document.getElementById('cost');
-const domModalWindow = document.getElementById('modal');
-const domOpenCreate = document.getElementById('openCreate');
-const domCloseCreate = document.getElementById('closeCreate');
-const domListOfInvoice = document.getElementById('listOfInvoice');
+const domListOfInvoice = document.getElementById('listWorkItems');
+
+
 
 domInvoiceNumber.value = JSON.parse(localStorage.getItem('keyNumber'));
 domInvoiceDiscount.value = JSON.parse(localStorage.getItem('keyDiscount'));
@@ -32,15 +30,32 @@ domInvoiceNumber.addEventListener('keyup', () => {localStorageOfInvoice(domInvoi
 domInvoiceDiscount.addEventListener('keyup', () => {localStorageOfInvoice(domInvoiceDiscount.value, 'keyDiscount')} );
 domInvoiceTaxes.addEventListener('keyup', () => {localStorageOfInvoice(domInvoiceTaxes.value, 'keyTaxes')} );
 domListOfInvoice.addEventListener('change', () => {localStorageOfInvoice(domListOfInvoice.value, 'keyListOfInvoice')} );
+domCloseCreate.addEventListener('click',()=> {domModalWindow.style.display = 'none'; cleanInput()})
 
 domOpenCreate.addEventListener('click', () =>
 {domModalWindow.style.display = 'block';
-domModalWindow.style.position = 'fixed';})
-domCloseCreate.addEventListener('click', () =>
+domModalWindow.style.position = 'fixed';
+domModalWindow.style.zIndex = '1';})
+
+domBtnCreate.addEventListener('click', () =>
 {
     domModalWindow.style.display = 'none';
-    let liLast = document.createElement('li');
-    liLast.innerHTML = `${domWorkItem.value} + ${domDescription.value} + ${domQty.value} + ${domCost.value}`;
+   domPopupTotal.value = domQty.value*domCost.value;
+    let liLast = document.createElement('div');
+    liLast.innerHTML = `
+
+    <section class=" text-xs text-black  pb-1" >
+              <div class="grid grid-cols-8">
+                <div class="col-span-4">${domWorkItem.value}
+                <div class="row-span-1 text-gray-600">${domDescription.value}</div></div>
+                <div>${domQty.value}</div>
+                <div>${domCost.value}</div>
+                <div class="col-span-2 text-right">${domPopupTotal.value}
+                </div>
+              </div>
+            </section>`
+
+
     domListOfInvoice.append(liLast);
     localStorageOfInvoice(domListOfInvoice.innerHTML, 'keyListOfInvoice');
 })
@@ -64,4 +79,10 @@ function onlyNumbersAndMax(event, value,  max) {
     } else {
         event.preventDefault();
     }
+}
+function cleanInput() {
+    domWorkItem.value=""
+    domDescription.value=""
+    domQty.value=""
+    domCost.value=""
 }
