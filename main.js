@@ -15,36 +15,84 @@ const domCost = document.getElementById('inpPopupCost');
 const domPopupTotal= document.getElementById('popupTotal');//там где умножаются Qty*Cost
 const domWorkItem = document.getElementById('inpPopupWorkItem');
 const domDescription = document.getElementById('inpPopupDescription');
-
 const domListOfInvoice = document.getElementById('listWorkItems');
 
+let sectId;
 
 
 domInvoiceNumber.value = JSON.parse(localStorage.getItem('keyNumber'));
 domInvoiceDiscount.value = JSON.parse(localStorage.getItem('keyDiscount'));
 domInvoiceTaxes.value = JSON.parse(localStorage.getItem('keyTaxes'));
 domListOfInvoice.innerHTML = JSON.parse(localStorage.getItem('keyListOfInvoice'));
-console.log('keyListOfInvoice', JSON.parse(localStorage.getItem('keyListOfInvoice')));
+//console.log('keyListOfInvoice', JSON.parse(localStorage.getItem('keyListOfInvoice')));
 
 domInvoiceNumber.addEventListener('keyup', () => {localStorageOfInvoice(domInvoiceNumber.value, 'keyNumber')} );
 domInvoiceDiscount.addEventListener('keyup', () => {localStorageOfInvoice(domInvoiceDiscount.value, 'keyDiscount')} );
 domInvoiceTaxes.addEventListener('keyup', () => {localStorageOfInvoice(domInvoiceTaxes.value, 'keyTaxes')} );
 domListOfInvoice.addEventListener('change', () => {localStorageOfInvoice(domListOfInvoice.value, 'keyListOfInvoice')} );
-domCloseCreate.addEventListener('click',()=> {domModalWindow.style.display = 'none'; cleanInput()})
+domCloseCreate.addEventListener('click',()=> {domModalWindow.style.display = 'none'; cleanInput()});
 
 domOpenCreate.addEventListener('click', () =>
 {domModalWindow.style.display = 'block';
 domModalWindow.style.position = 'fixed';
-domModalWindow.style.zIndex = '1';})
+domModalWindow.style.zIndex = '1';});
+
+domListOfInvoice.addEventListener('click', (event) => {
+    //for (let node of event.target.closest('section').children) {
+    //    console.log(node);
+    //}
+    //console.log('HTML ', domListOfInvoice.textContent);
+    //console.log('HTML ', event.target.id);
+    let sectDatas = event.target.closest('section').dataset;
+    sectId = event.target.closest('section').id;
+    console.log('sectId=', sectId);
+    console.log('data-work=', sectDatas.work);
+    console.log('data-des=', sectDatas.des);
+    console.log('data-qty=', sectDatas.qty);
+    console.log('data-cost=', sectDatas.cost);
+
+    domModalWindow.style.display = 'block';
+    domModalWindow.style.position = 'fixed';
+    domModalWindow.style.zIndex = '1';
+
+    domWorkItem.value = sectDatas.work;
+    domDescription.value = sectDatas.des;
+    domQty.value = sectDatas.qty;
+    domCost.value = sectDatas.cost;
+
+    return sectId;
+    //event.target.closest('section').remove();
+    //localStorageOfInvoice(domListOfInvoice.innerHTML, 'keyListOfInvoice');
+    });
+
+domBtnDelete.addEventListener('click', () => {
+    console.log('delete sectId=', sectId);
+    let domSectId = document.getElementById(sectId);
+    domSectId.remove();
+    domModalWindow.style.display = 'none';
+    localStorageOfInvoice(domListOfInvoice.innerHTML, 'keyListOfInvoice');
+    cleanInput();
+});
 
 domBtnCreate.addEventListener('click', () =>
 {
     domModalWindow.style.display = 'none';
    domPopupTotal.value = domQty.value*domCost.value;
     let liLast = document.createElement('div');
+    let length = 8,
+        charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    let res = '';
+    for (let i = 0, n = charset.length; i < length; ++i) {
+        res += charset.charAt(Math.floor(Math.random() * n));
+    }
     liLast.innerHTML = `
 
-    <section class=" text-xs text-black  pb-1" >
+    <section id="${res}" 
+    data-work="${domWorkItem.value}" 
+    data-des="${domDescription.value}"
+    data-qty="${domQty.value}"
+    data-cost="${domCost.value}"
+    class="hover-mouse text-xs text-black pb-1">
               <div class="grid grid-cols-8">
                 <div class="col-span-4">${domWorkItem.value}
                 <div class="row-span-1 text-gray-600">${domDescription.value}</div></div>
