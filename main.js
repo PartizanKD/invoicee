@@ -17,7 +17,7 @@ const domWorkItem = document.getElementById('inpPopupWorkItem');
 const domDescription = document.getElementById('inpPopupDescription');
 const domListOfInvoice = document.getElementById('listWorkItems');
 
-let sectId;
+let sectId = '';
 
 
 domInvoiceNumber.value = JSON.parse(localStorage.getItem('keyNumber'));
@@ -38,11 +38,6 @@ domModalWindow.style.position = 'fixed';
 domModalWindow.style.zIndex = '1';});
 
 domListOfInvoice.addEventListener('click', (event) => {
-    //for (let node of event.target.closest('section').children) {
-    //    console.log(node);
-    //}
-    //console.log('HTML ', domListOfInvoice.textContent);
-    //console.log('HTML ', event.target.id);
     let sectDatas = event.target.closest('section').dataset;
     sectId = event.target.closest('section').id;
     console.log('sectId=', sectId);
@@ -72,40 +67,67 @@ domBtnDelete.addEventListener('click', () => {
     domModalWindow.style.display = 'none';
     localStorageOfInvoice(domListOfInvoice.innerHTML, 'keyListOfInvoice');
     cleanInput();
+    sectId = '';
 });
 
 domBtnCreate.addEventListener('click', () =>
 {
-    domModalWindow.style.display = 'none';
-   domPopupTotal.value = domQty.value*domCost.value;
-    let liLast = document.createElement('div');
-    let length = 8,
-        charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    let res = '';
-    for (let i = 0, n = charset.length; i < length; ++i) {
-        res += charset.charAt(Math.floor(Math.random() * n));
-    }
-    liLast.innerHTML = `
+    if (sectId !== ''){
+        domModalWindow.style.display = 'none';
+        domPopupTotal.value = domQty.value*domCost.value;
+        let upList = document.getElementById(sectId);
+        console.log('upList ', upList)
+        upList.setAttribute('data-work', domWorkItem.value);
+        upList.setAttribute('data-des', domDescription.value);
+        upList.setAttribute('data-qty', domQty.value);
+        upList.setAttribute('data-cost', domCost.value);
 
-    <section id="${res}" 
-    data-work="${domWorkItem.value}" 
-    data-des="${domDescription.value}"
-    data-qty="${domQty.value}"
-    data-cost="${domCost.value}"
-    class="hover-mouse text-xs text-black pb-1">
+        upList.innerHTML = `
+            <div class="hover-mouse text-xs text-black pb-1">
               <div class="grid grid-cols-8">
                 <div class="col-span-4">${domWorkItem.value}
                 <div class="row-span-1 text-gray-600">${domDescription.value}</div></div>
                 <div>${domQty.value}</div>
                 <div>${domCost.value}</div>
-                <div class="col-span-2 text-right">${domPopupTotal.value}
-                </div>
+                <div class="col-span-2 text-right">${domPopupTotal.value}</div>
               </div>
-            </section>`
+            </div>`
+
+        localStorageOfInvoice(domListOfInvoice.innerHTML, 'keyListOfInvoice');
+        cleanInput();
+        sectId = '';
+    } else {
+        domModalWindow.style.display = 'none';
+        domPopupTotal.value = domQty.value * domCost.value;
+        let liLast = document.createElement('section');
+        let length = 8,
+            charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        let res = '';
+        for (let i = 0, n = charset.length; i < length; ++i) {
+            res += charset.charAt(Math.floor(Math.random() * n));
+        }
+        liLast.id = res;
+        liLast.setAttribute('data-work', domWorkItem.value);
+        liLast.setAttribute('data-des', domDescription.value);
+        liLast.setAttribute('data-qty', domQty.value);
+        liLast.setAttribute('data-cost', domCost.value);
+
+        liLast.innerHTML = `
+    <div class="hover-mouse text-xs text-black pb-1">
+              <div class="grid grid-cols-8">
+                <div class="col-span-4">${domWorkItem.value}
+                <div class="row-span-1 text-gray-600">${domDescription.value}</div></div>
+                <div>${domQty.value}</div>
+                <div>${domCost.value}</div>
+                <div class="col-span-2 text-right">${domPopupTotal.value}</div>
+              </div>
+            </div>`
 
 
-    domListOfInvoice.append(liLast);
-    localStorageOfInvoice(domListOfInvoice.innerHTML, 'keyListOfInvoice');
+        domListOfInvoice.append(liLast);
+        localStorageOfInvoice(domListOfInvoice.innerHTML, 'keyListOfInvoice');
+        cleanInput();
+    }
 })
 
 domInvoiceNumber.addEventListener('keydown', (event) =>{onlyNumbersAndMax(event, domInvoiceNumber.value, 9999)} );
